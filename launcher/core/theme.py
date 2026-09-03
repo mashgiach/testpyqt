@@ -1,11 +1,14 @@
-"""Palette lifted from the GuttyKreum Urban Accessories pixel art."""
+"""Palette lifted from the GuttyKreum pixel art, pitched dark for the launcher."""
 
-# Neutral base — the deep blues the tileset uses for night scenes.
-INK = "#12151f"
-BASE = "#171b28"
-SURFACE = "#1e2334"
-SURFACE_HI = "#262c40"
-LINE = "#333a52"
+# Near-black navy base. The art carries the colour; the chrome stays out of it.
+INK = "#05070c"
+BASE = "#090d15"
+SURFACE = "#0f141f"
+SURFACE_HI = "#161d2b"
+LINE = "#1b2434"
+
+# Deep blue the hero scrim fades into, matching the tileset's night sky.
+HERO_SCRIM = "#070b14"
 
 # Accents pulled straight out of the sprites.
 ORANGE = "#e8703a"
@@ -16,9 +19,9 @@ CREAM = "#f2e7d3"
 MOSS = "#7aa886"
 ROSE = "#d4676b"
 
-TEXT = "#e9edf7"
-TEXT_DIM = "#98a2be"
-TEXT_FAINT = "#6b7595"
+TEXT = "#eef2fa"
+TEXT_DIM = "#8e99b3"
+TEXT_FAINT = "#5c6782"
 
 STATE_COLORS = {
     "ready": MOSS,

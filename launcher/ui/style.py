@@ -12,23 +12,10 @@ LauncherTitleBar {{
     background-color: {c.INK};
     border-right: 1px solid {c.LINE};
 }}
-#homePage, #libraryPage, #settingsPage {{
+#homePage, #homeHolder, #libraryPage, #settingsPage {{
     background-color: {c.BASE};
 }}
-#newsFeed {{
-    background-color: {c.BASE};
-    border-right: 1px solid {c.LINE};
-}}
-#sidePanel {{
-    background-color: {c.SURFACE};
-}}
-#newsRow {{
-    border-radius: 6px;
-}}
-#newsRow:hover {{
-    background-color: {c.SURFACE_HI};
-}}
-#actionBar {{
+#statusBar {{
     background-color: {c.INK};
     border-top: 1px solid {c.LINE};
 }}

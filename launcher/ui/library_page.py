@@ -17,7 +17,7 @@ class GameCard(QWidget):
     def __init__(self, game, parent=None):
         super().__init__(parent)
         self.game = game
-        self.setFixedSize(228, 196)
+        self.setFixedSize(208, 182)
         self.setCursor(Qt.PointingHandCursor)
         self._hover = False
 
@@ -42,7 +42,7 @@ class GameCard(QWidget):
         p.setBrush(QColor(theme.SURFACE_HI if self._hover else theme.SURFACE))
         p.drawRoundedRect(rect, 12, 12)
 
-        art = QRectF(rect.left(), rect.top(), rect.width(), 116)
+        art = QRectF(rect.left(), rect.top(), rect.width(), 108)
         accent = QColor(self.game.accent)
         grad = QLinearGradient(art.left(), art.top(), art.right(), art.bottom())
         grad.setColorAt(0, QColor(accent.red(), accent.green(), accent.blue(), 60))
@@ -53,7 +53,7 @@ class GameCard(QWidget):
 
         icon = pixel.load(tile(self.game.icon), 1)
         if not icon.isNull():
-            size = 80 if self._hover else 72
+            size = 76 if self._hover else 68
             scaled = icon.scaled(size, size, Qt.KeepAspectRatio, Qt.FastTransformation)
             p.drawPixmap(int(art.center().x() - scaled.width() / 2),
                          int(art.center().y() - scaled.height() / 2), scaled)
@@ -82,7 +82,7 @@ class LibraryPage(QWidget):
         self.catalog = catalog
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(28, 22, 22, 12)
+        layout.setContentsMargins(40, 62, 22, 12)
         layout.setSpacing(16)
 
         header = QHBoxLayout()

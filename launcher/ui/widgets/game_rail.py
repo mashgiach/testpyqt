@@ -141,12 +141,6 @@ class GameRail(QWidget):
         scroll.setWidget(holder)
         layout.addWidget(scroll, 1)
 
-        self.footer = CaptionLabel("")
-        self.footer.setContentsMargins(20, 6, 16, 0)
-        self.footer.setStyleSheet(
-            f"color: {theme.TEXT_FAINT}; border-top: 1px solid {theme.LINE};")
-        layout.addWidget(self.footer)
-        self._update_footer()
 
     def select(self, game_id: str):
         for item in self.items:
@@ -156,10 +150,3 @@ class GameRail(QWidget):
     def refresh(self):
         for item in self.items:
             item.update()
-        self._update_footer()
-
-    def _update_footer(self):
-        installed = [i.game for i in self.items if i.game.installed]
-        used = sum(g.size_gb for g in installed)
-        self.footer.setText(
-            f"{len(installed)} of {len(self.items)} installed  -  {used:.1f} GB on disk")

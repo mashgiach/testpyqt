@@ -1,32 +1,35 @@
-"""The big launch button. Painted by hand so it can carry a hard pixel edge."""
+"""The primary action: a wide white pill, like the DOWNLOAD button on a
+publisher's game page. Painted by hand so the hover and disabled states stay
+under our control."""
 from PyQt5.QtCore import Qt, QRectF, QPropertyAnimation, pyqtProperty
-from PyQt5.QtGui import QPainter, QColor, QFont, QLinearGradient
+from PyQt5.QtGui import QPainter, QColor, QFont
 from PyQt5.QtWidgets import QPushButton
 
 from ...core import theme
 
 
-class PlayButton(QPushButton):
-    def __init__(self, text="START GAME", parent=None):
+class PillButton(QPushButton):
+    def __init__(self, text="DOWNLOAD", parent=None):
         super().__init__(text, parent)
-        self.setFixedSize(226, 58)
+        self.setFixedSize(268, 62)
         self.setCursor(Qt.PointingHandCursor)
-        self._accent = theme.ORANGE
-        self._lift = 0.0
+        self._accent = None      # None keeps the button white
+        self._hover = 0.0
 
-        self._anim = QPropertyAnimation(self, b"lift", self)
-        self._anim.setDuration(120)
+        self._anim = QPropertyAnimation(self, b"hover", self)
+        self._anim.setDuration(140)
 
-    def get_lift(self):
-        return self._lift
+    def get_hover(self):
+        return self._hover
 
-    def set_lift(self, value):
-        self._lift = value
+    def set_hover(self, value):
+        self._hover = value
         self.update()
 
-    lift = pyqtProperty(float, get_lift, set_lift)
+    hover = pyqtProperty(float, get_hover, set_hover)
 
-    def set_accent(self, color: str):
+    def set_accent(self, color):
+        """Pass a colour to tint the pill, or None to keep it white."""
         self._accent = color
         self.update()
 
@@ -39,44 +42,49 @@ class PlayButton(QPushButton):
 
     def _animate(self, value):
         self._anim.stop()
-        self._anim.setStartValue(self._lift)
+        self._anim.setStartValue(self._hover)
         self._anim.setEndValue(value)
         self._anim.start()
 
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
+        rect = QRectF(self.rect()).adjusted(1, 1, -1, -1)
+        radius = rect.height() / 2
 
-        enabled = self.isEnabled()
-        base = QColor(self._accent if enabled else theme.LINE)
-        edge = base.darker(160)
-        pressed = self.isDown() and enabled
+        if not self.isEnabled():
+            p.setPen(Qt.NoPen)
+            p.setBrush(QColor(255, 255, 255, 20))
+            p.drawRoundedRect(rect, radius, radius)
+            p.setPen(QColor(theme.TEXT_FAINT))
+            self._draw_label(p, rect)
+            p.end()
+            return
 
-        depth = 5
-        top = depth if pressed else int(depth - 2 * self._lift)
-        face = QRectF(0, top, self.width(), self.height() - depth - top + depth)
-        face.setHeight(self.height() - depth - top)
+        base = QColor(self._accent) if self._accent else QColor("#ffffff")
+        if self.isDown():
+            base = base.darker(112)
+        elif self._hover:
+            base = base.lighter(100 + int(6 * self._hover))
+
+        # A soft halo on hover, so the pill lifts off the artwork.
+        if self._hover:
+            glow = QColor(base)
+            glow.setAlpha(int(46 * self._hover))
+            p.setPen(Qt.NoPen)
+            p.setBrush(glow)
+            p.drawRoundedRect(rect.adjusted(-5, -5, 5, 5), radius + 5, radius + 5)
 
         p.setPen(Qt.NoPen)
-        p.setBrush(edge)
-        p.drawRoundedRect(QRectF(0, top + 4, self.width(), self.height() - top - 4), 8, 8)
+        p.setBrush(base)
+        p.drawRoundedRect(rect, radius, radius)
 
-        grad = QLinearGradient(0, face.top(), 0, face.bottom())
-        grad.setColorAt(0, base.lighter(118 if enabled else 100))
-        grad.setColorAt(1, base)
-        p.setBrush(grad)
-        p.drawRoundedRect(face, 8, 8)
-
-        if enabled:
-            p.setBrush(QColor(255, 255, 255, 38))
-            p.drawRoundedRect(QRectF(face.left() + 6, face.top() + 4,
-                                     face.width() - 12, face.height() * 0.36), 6, 6)
-
-        font = QFont("Noto Sans", 13, QFont.Black)
-        font.setLetterSpacing(QFont.AbsoluteSpacing, 2.0)
-        p.setFont(font)
-        p.setPen(QColor(0, 0, 0, 90))
-        p.drawText(face.adjusted(0, 2, 0, 2), Qt.AlignCenter, self.text())
-        p.setPen(QColor("#fff8ec" if enabled else theme.TEXT_FAINT))
-        p.drawText(face, Qt.AlignCenter, self.text())
+        p.setPen(QColor(theme.INK if not self._accent else "#0d1018"))
+        self._draw_label(p, rect)
         p.end()
+
+    def _draw_label(self, p, rect):
+        font = QFont("Noto Sans", 12, QFont.Bold)
+        font.setLetterSpacing(QFont.AbsoluteSpacing, 1.6)
+        p.setFont(font)
+        p.drawText(rect, Qt.AlignCenter, self.text())

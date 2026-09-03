@@ -23,6 +23,7 @@ from PyQt5.QtWidgets import QApplication  # noqa: E402
 from launcher.core.catalog import Catalog  # noqa: E402
 from launcher.core.patcher import Patcher  # noqa: E402
 from launcher.ui.main_window import MainWindow  # noqa: E402
+from launcher.ui.widgets.hero import ACTION_TEXT  # noqa: E402
 
 app = QApplication.instance() or QApplication(sys.argv)
 
@@ -111,9 +112,13 @@ class WindowTest(unittest.TestCase):
     def test_selecting_a_game_updates_every_panel(self):
         self.window.rail.select("shibuya-drift")
         self.assertEqual(self.window.current.id, "shibuya-drift")
-        self.assertIn("Shibuya Drift", self.window.action_bar.status.text()
-                      + self.window.home.hero._game.title)
-        self.assertEqual(self.window.home.side.spotlight._game.id, "shibuya-drift")
+        self.assertEqual(self.window.home.hero._game.id, "shibuya-drift")
+        self.assertEqual(self.window.home.hero.title.text(), "Shibuya Drift")
+        # Earlier tests may have reset the library, so derive the expected
+        # label from the game's own state rather than hard-coding one.
+        self.assertEqual(self.window.home.hero.play.text(),
+                         ACTION_TEXT[self.window.current.state])
+        self.assertTrue(self.window.home.grid._cards)
 
     def test_install_then_launch(self):
         window = self.window
@@ -121,14 +126,18 @@ class WindowTest(unittest.TestCase):
         game = window.current
         self.assertEqual(game.state, "install")
 
+        self.assertEqual(window.home.hero.play.text(), "DOWNLOAD")
+
         window._on_play()
         self.assertEqual(game.state, "busy")
-        self.assertFalse(window.action_bar.bar.isHidden())
+        self.assertFalse(window.status_bar.bar.isHidden())
+        self.assertFalse(window.home.hero.play.isEnabled())
 
         while window.patcher.active:
             window.patcher._tick()
         self.assertEqual(game.state, "ready")
         self.assertEqual(game.installed_version, game.version)
+        self.assertEqual(window.home.hero.play.text(), "START GAME")
 
         window._on_play()
         self.assertEqual(game.state, "running")
@@ -137,13 +146,25 @@ class WindowTest(unittest.TestCase):
 
     def test_maintenance_button_is_dead(self):
         self.window.rail.select("kaiju-frog")
-        self.assertFalse(self.window.action_bar.play.isEnabled())
+        self.assertFalse(self.window.home.hero.play.isEnabled())
+        self.assertEqual(self.window.home.hero.play.text(), "UNAVAILABLE")
         self.window._on_play()
         self.assertNotEqual(self.window.patcher.game_id, "kaiju-frog")
 
     def test_reset_library_marks_everything_uninstalled(self):
         self.window._reset_library()
         self.assertTrue(all(not g.installed for g in self.window.catalog.games))
+
+    def test_news_grid_filters_by_category(self):
+        self.window.rail.select("kanagawa-nights")
+        grid = self.window.home.grid
+        self.assertIn("Event", grid.categories())
+
+        grid.set_filter("Event")
+        self.assertTrue(all(c.item["category"] == "Event" for c in grid._cards))
+
+        grid.set_filter("All")
+        self.assertEqual(len(grid._cards), len(grid._items))
 
     def test_pages_switch(self):
         for key, page in (("library", self.window.library),
