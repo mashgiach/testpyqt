@@ -4,32 +4,36 @@ A Nexon/MapleStory-style game launcher built with **PyQt5** and
 **[PyQt-Fluent-Widgets](https://pyqt-fluent-widgets.readthedocs.io/en/latest/)**,
 skinned with GuttyKreum's *Urban Accessories* pixel art.
 
-Laid out like a publisher's game page: near-black chrome, full-bleed key art
-with the nav floating over it, one white pill call-to-action, and a grid of
-notice cards underneath.
+Laid out like a publisher's game page: deep navy, key art fading out of a blue
+bloom, a logo block with a status chip and section links, one white pill
+call-to-action, and a row of notice cards under a `▾ ALL` filter. No sidebar -
+app navigation sits in the title bar, and the Library tab switches games.
 
 ![Play tab](docs/screenshot-play.png)
 
 ## What it does
 
 - **Animated pixel hero** - the artwork GIFs are drawn with nearest-neighbour
-  scaling, so they stay crisp instead of turning to mush. A layered scrim
-  fades the art into the page, keeping the wordmark, nav and button legible
-  over any frame. Each game crops the shared art at a different height, so
-  every hero looks distinct.
+  scaling, so they stay crisp instead of turning to mush. The art is masked
+  with an alpha ramp so it dissolves into the blue bloom behind it rather
+  than ending on a hard edge, which keeps the wordmark, nav and button
+  legible over any frame. Each game crops the shared art at a different
+  height, so every hero looks distinct.
 - **One white pill that knows what it means** - DOWNLOAD, UPDATE or START
   GAME, disabled with a reason during a download, a session or maintenance.
-- **Game rail** with live install state: ready / update / not installed /
-  downloading / maintenance.
-- **Notice grid** of image-topped cards. Each card composes a darkened slice
-  of the banner with a subject sprite chosen by category, so a row of four
-  reads as four different posts rather than four crops of one street.
+- **Notice grid** of four cards across, in the two shapes the reference page
+  uses: promo posts are pure artwork with the title burned into the bottom
+  (and a `MEDIA` strip for galleries), while ordinary notices put a smaller
+  image over a text body. Each thumbnail composes a darkened slice of the
+  banner with a subject sprite chosen by category, so a row reads as four
+  different posts rather than four crops of one street.
 - **Working patcher** with staged progress, live speed and ETA, pause,
   resume and cancel. It honours the bandwidth limit from settings.
 - **Status strip** along the bottom: best server ping (click for the full
   server list with load meters), version state, download readout, and how
   much of the library is on disk.
-- **Library grid** with search.
+- **Library grid** with search - it doubles as the game switcher, and outlines
+  whichever game is currently loaded.
 - **Settings** built from Fluent setting cards: install folder, resolution,
   display mode, region, auto-update, tray behaviour, bandwidth cap, theme
   and accent colour.
@@ -82,9 +86,9 @@ launcher/
       hero.py           key art, wordmark, nav links, primary action
       news_grid.py      notice cards and their composed thumbnails
       status_bar.py     bottom strip and the server flyout
-      game_rail.py      left-hand game selector
+      filter_button.py  the left-triangle category filter
       play_button.py    the white pill
-      title_bar.py      frameless title bar and account chip
+      title_bar.py      title bar with the app nav and account chip
       side_panel.py     server rows used by the flyout
 assets/                 pixel art (banners, tiles)
 data/                   games.json, news.json, servers.json

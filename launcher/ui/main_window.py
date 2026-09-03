@@ -1,19 +1,16 @@
-"""The launcher window: rail, tabs, and the state machine behind the play button."""
+"""The launcher window: title-bar nav, pages, and the play-button state machine."""
 import random
 
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QApplication,
+from PyQt5.QtWidgets import (QVBoxLayout, QApplication,
                              QSystemTrayIcon, QMenu, QAction)
 
 from qframelesswindow import FramelessWindow
-from qfluentwidgets import (Pivot, PopUpAniStackedWidget, InfoBar, InfoBarPosition,
-                            FluentIcon, TransparentToolButton, setTheme, Theme,
-                            setThemeColor, ToolTipFilter)
+from qfluentwidgets import (PopUpAniStackedWidget, InfoBar, InfoBarPosition,
+                            setTheme, Theme, setThemeColor)
 
 from ..core import theme as palette
-
-TAB_HEIGHT = 46
 from ..core.catalog import Catalog
 from ..core.config import cfg
 from ..core.patcher import Patcher
@@ -45,23 +42,14 @@ class MainWindow(FramelessWindow):
         self._apply_style()
         self._setup_tray()
 
-        self.rail.select(self.current.id)
+        self.select_game(self.current.id)
         self._center()
 
     # ---------------------------------------------------------------- layout
 
     def _build_ui(self):
-        from .widgets.game_rail import GameRail
-
-        root = QHBoxLayout(self)
-        root.setContentsMargins(0, self.titleBar.height(), 0, 0)
-        root.setSpacing(0)
-
-        self.rail = GameRail(self.catalog.games)
-        root.addWidget(self.rail)
-
-        column = QVBoxLayout()
-        column.setContentsMargins(0, 0, 0, 0)
+        column = QVBoxLayout(self)
+        column.setContentsMargins(0, self.titleBar.height(), 0, 0)
         column.setSpacing(0)
 
         self.stack = PopUpAniStackedWidget(self)
@@ -75,38 +63,11 @@ class MainWindow(FramelessWindow):
         self.status_bar = StatusBar()
         column.addWidget(self.status_bar)
 
-        root.addLayout(column, 1)
-
-        # The tab row floats over the hero artwork rather than sitting on a
-        # band of its own, the way a game page puts its nav over the key art.
-        self.tabs = QWidget(self)
-        self.tabs.setAttribute(Qt.WA_TransparentForMouseEvents, False)
-        self.tabs.setStyleSheet("background: transparent;")
-        self.tabs.setLayout(self._build_tabs())
-        self.tabs.setFixedHeight(TAB_HEIGHT)
-
+        self.pivot = self.titleBar.pivot
+        for key in ("home", "library", "settings"):
+            self.pivot.widget(key).clicked.connect(
+                lambda checked=False, k=key: self._go(k))
         self.titleBar.raise_()
-        self.tabs.raise_()
-
-    def _build_tabs(self):
-        bar = QHBoxLayout()
-        bar.setContentsMargins(40, 6, 18, 6)
-        bar.setSpacing(8)
-
-        self.pivot = Pivot(self)
-        for key, text in (("home", "PLAY"), ("library", "LIBRARY"), ("settings", "SETTINGS")):
-            self.pivot.addItem(routeKey=key, text=text,
-                               onClick=lambda checked=False, k=key: self._go(k))
-        self.pivot.setCurrentItem("home")
-        bar.addWidget(self.pivot)
-        bar.addStretch(1)
-
-        self.refresh_btn = TransparentToolButton(FluentIcon.SYNC, self)
-        self.refresh_btn.setToolTip("Refresh news and server status")
-        self.refresh_btn.installEventFilter(ToolTipFilter(self.refresh_btn))
-        self.refresh_btn.clicked.connect(self._refresh_status)
-        bar.addWidget(self.refresh_btn)
-        return bar
 
     def _apply_style(self):
         setTheme(Theme.DARK)
@@ -123,7 +84,6 @@ class MainWindow(FramelessWindow):
     # --------------------------------------------------------------- signals
 
     def _connect(self):
-        self.rail.game_selected.connect(self.select_game)
         self.library.game_selected.connect(self._open_from_library)
         self.home.article_opened.connect(self._open_article)
         self.status_bar.servers_clicked.connect(
@@ -147,17 +107,13 @@ class MainWindow(FramelessWindow):
         self.titleBar.account.profile.connect(
             lambda: self._toast("Account page", "This would open your profile in a browser."))
         self.titleBar.notify_btn.clicked.connect(self._show_notifications)
+        self.titleBar.refresh_btn.clicked.connect(self._refresh_status)
 
     # ------------------------------------------------------------- behaviour
 
     def _go(self, key):
         self.stack.setCurrentWidget({"home": self.home, "library": self.library,
                                      "settings": self.settings}[key])
-        # Over the hero the row floats on the artwork; elsewhere it needs a
-        # solid backing so scrolled content does not slide under it.
-        self.tabs.setStyleSheet(
-            "background: transparent;" if key == "home"
-            else f"background-color: {palette.BASE};")
 
     def select_game(self, game_id: str):
         self.current = self.catalog.get(game_id)
@@ -173,7 +129,7 @@ class MainWindow(FramelessWindow):
     def _open_from_library(self, game_id: str):
         self.pivot.setCurrentItem("home")
         self._go("home")
-        self.rail.select(game_id)
+        self.select_game(game_id)
 
     def _refresh_current(self):
         self.current.refresh_state()
@@ -181,9 +137,8 @@ class MainWindow(FramelessWindow):
         self.status_bar.show_idle(self.current)
 
     def _refresh_chrome(self):
-        """Anything that shows install state: rail, hero chip, library, footer."""
-        self.rail.refresh()
-        self.library.refresh()
+        """Anything that shows install state: hero chip, library, status strip."""
+        self.library.refresh(self.current.id)
         self.home.hero.set_state(self.current.state)
         installed = [g for g in self.catalog.games if g.installed]
         self.status_bar.set_library(len(installed), len(self.catalog.games),
@@ -319,12 +274,6 @@ class MainWindow(FramelessWindow):
             self._toast("Welcome back", f"Signed in as {name}.")
         else:
             self.titleBar.account.set_account("Guest", "frog")
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        if hasattr(self, "tabs"):
-            self.tabs.setGeometry(self.rail.width(), self.titleBar.height(),
-                                  self.width() - self.rail.width(), TAB_HEIGHT)
 
     def _setup_tray(self):
         if not QSystemTrayIcon.isSystemTrayAvailable():

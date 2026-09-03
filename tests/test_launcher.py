@@ -109,8 +109,8 @@ class WindowTest(unittest.TestCase):
         cls.window = MainWindow()
         cls.window.resize(1180, 760)
 
-    def test_selecting_a_game_updates_every_panel(self):
-        self.window.rail.select("shibuya-drift")
+    def test_selecting_a_game_updates_the_page(self):
+        self.window.select_game("shibuya-drift")
         self.assertEqual(self.window.current.id, "shibuya-drift")
         self.assertEqual(self.window.home.hero._game.id, "shibuya-drift")
         self.assertEqual(self.window.home.hero.title.text(), "Shibuya Drift")
@@ -122,7 +122,7 @@ class WindowTest(unittest.TestCase):
 
     def test_install_then_launch(self):
         window = self.window
-        window.rail.select("torii-tactics")
+        window.select_game("torii-tactics")
         game = window.current
         self.assertEqual(game.state, "install")
 
@@ -145,7 +145,7 @@ class WindowTest(unittest.TestCase):
         self.assertEqual(game.state, "ready")
 
     def test_maintenance_button_is_dead(self):
-        self.window.rail.select("kaiju-frog")
+        self.window.select_game("kaiju-frog")
         self.assertFalse(self.window.home.hero.play.isEnabled())
         self.assertEqual(self.window.home.hero.play.text(), "UNAVAILABLE")
         self.window._on_play()
@@ -156,7 +156,7 @@ class WindowTest(unittest.TestCase):
         self.assertTrue(all(not g.installed for g in self.window.catalog.games))
 
     def test_news_grid_filters_by_category(self):
-        self.window.rail.select("kanagawa-nights")
+        self.window.select_game("kanagawa-nights")
         grid = self.window.home.grid
         self.assertIn("Event", grid.categories())
 

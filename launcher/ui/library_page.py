@@ -8,16 +8,17 @@ from qfluentwidgets import (SearchLineEdit, FlowLayout, SingleDirectionScrollAre
 
 from ..core import pixel, theme
 from ..core.paths import tile
-from .widgets.game_rail import STATE_TEXT
+from ..core.catalog import STATE_TEXT
 
 
 class GameCard(QWidget):
     clicked = pyqtSignal(str)
 
-    def __init__(self, game, parent=None):
+    def __init__(self, game, current=False, parent=None):
         super().__init__(parent)
         self.game = game
-        self.setFixedSize(208, 182)
+        self.current = current
+        self.setFixedSize(250, 214)
         self.setCursor(Qt.PointingHandCursor)
         self._hover = False
 
@@ -40,20 +41,19 @@ class GameCard(QWidget):
 
         p.setPen(Qt.NoPen)
         p.setBrush(QColor(theme.SURFACE_HI if self._hover else theme.SURFACE))
-        p.drawRoundedRect(rect, 12, 12)
+        p.drawRect(rect)
 
-        art = QRectF(rect.left(), rect.top(), rect.width(), 108)
+        art = QRectF(rect.left(), rect.top(), rect.width(), 128)
         accent = QColor(self.game.accent)
         grad = QLinearGradient(art.left(), art.top(), art.right(), art.bottom())
         grad.setColorAt(0, QColor(accent.red(), accent.green(), accent.blue(), 60))
         grad.setColorAt(1, QColor(theme.INK))
         p.setBrush(grad)
-        p.drawRoundedRect(art, 12, 12)
-        p.drawRect(QRectF(art.left(), art.bottom() - 12, art.width(), 12))
+        p.drawRect(art)
 
         icon = pixel.load(tile(self.game.icon), 1)
         if not icon.isNull():
-            size = 76 if self._hover else 68
+            size = 84 if self._hover else 76
             scaled = icon.scaled(size, size, Qt.KeepAspectRatio, Qt.FastTransformation)
             p.drawPixmap(int(art.center().x() - scaled.width() / 2),
                          int(art.center().y() - scaled.height() / 2), scaled)
@@ -70,6 +70,11 @@ class GameCard(QWidget):
         p.setPen(QColor(theme.STATE_COLORS.get(self.game.state, theme.TEXT_FAINT)))
         p.drawText(int(rect.left() + 14), int(art.bottom() + 64),
                    STATE_TEXT.get(self.game.state, ""))
+
+        if self.current:
+            p.setBrush(Qt.NoBrush)
+            p.setPen(QColor(self.game.accent))
+            p.drawRect(rect.adjusted(0.5, 0.5, -0.5, -0.5))
         p.end()
 
 
@@ -80,9 +85,10 @@ class LibraryPage(QWidget):
         super().__init__(parent)
         self.setObjectName("libraryPage")
         self.catalog = catalog
+        self.current_id = catalog.games[0].id
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(40, 62, 22, 12)
+        layout.setContentsMargins(48, 26, 30, 14)
         layout.setSpacing(16)
 
         header = QHBoxLayout()
@@ -120,9 +126,11 @@ class LibraryPage(QWidget):
             haystack = f"{game.title} {game.genre} {' '.join(game.tags)}".lower()
             if needle and needle not in haystack:
                 continue
-            card = GameCard(game)
+            card = GameCard(game, game.id == self.current_id)
             card.clicked.connect(self.game_selected)
             self.flow.addWidget(card)
 
-    def refresh(self):
+    def refresh(self, current_id=None):
+        if current_id is not None:
+            self.current_id = current_id
         self._rebuild()

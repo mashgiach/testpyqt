@@ -5,9 +5,8 @@ from PyQt5.QtWidgets import QLabel, QHBoxLayout, QWidget
 
 from qframelesswindow import TitleBar
 from qfluentwidgets import (TransparentToolButton, FluentIcon, RoundMenu, Action,
-                            CaptionLabel, setFont, MenuAnimationType)
+                            setFont, MenuAnimationType, Pivot, ToolTipFilter)
 
-from ... import BUILD
 from ...core import pixel, theme
 from ...core.paths import tile
 
@@ -66,7 +65,7 @@ class AccountChip(QWidget):
 class LauncherTitleBar(TitleBar):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(44)
+        self.setFixedHeight(48)
 
         mark = QLabel()
         mark.setPixmap(pixel.load(tile("torii"), 1).scaled(
@@ -81,9 +80,18 @@ class LauncherTitleBar(TitleBar):
         setFont(suffix, 13, QFont.Light)
         suffix.setStyleSheet(f"color: {theme.ORANGE}; letter-spacing: 2px;")
 
-        self.build = CaptionLabel(f"build {BUILD}")
-        self.build.setStyleSheet(f"color: {theme.TEXT_FAINT};")
-        self.build.setContentsMargins(14, 2, 0, 0)
+        # App-level nav lives up here so the page below can stay faithful to
+        # the reference layout, which has no sidebar and no tab band.
+        self.pivot = Pivot(self)
+        for key, text in (("home", "PLAY"), ("library", "LIBRARY"),
+                          ("settings", "SETTINGS")):
+            self.pivot.addItem(routeKey=key, text=text)
+        self.pivot.setCurrentItem("home")
+
+        self.refresh_btn = TransparentToolButton(FluentIcon.SYNC, self)
+        self.refresh_btn.setFixedSize(34, 30)
+        self.refresh_btn.setToolTip("Refresh news and server status")
+        self.refresh_btn.installEventFilter(ToolTipFilter(self.refresh_btn))
 
         self.account = AccountChip(self)
 
@@ -93,14 +101,18 @@ class LauncherTitleBar(TitleBar):
         left = QHBoxLayout()
         left.setContentsMargins(0, 0, 0, 0)
         left.setSpacing(2)
-        for widget in (mark, wordmark, suffix, self.build):
+        for widget in (mark, wordmark, suffix):
             left.addWidget(widget, 0, Qt.AlignVCenter)
+        left.addSpacing(26)
+        left.addWidget(self.pivot, 0, Qt.AlignVCenter)
 
         # The base title bar already ends with a stretch and the window buttons,
         # so the account controls go in just ahead of the minimise button.
         self.hBoxLayout.insertLayout(0, left)
         slot = self.hBoxLayout.indexOf(self.minBtn)
-        self.hBoxLayout.insertWidget(slot, self.notify_btn, 0, Qt.AlignVCenter)
+        self.hBoxLayout.insertWidget(slot, self.refresh_btn, 0, Qt.AlignVCenter)
+        self.hBoxLayout.insertWidget(slot + 1, self.notify_btn, 0, Qt.AlignVCenter)
+        slot += 1
         self.hBoxLayout.insertSpacing(slot + 1, 6)
         self.hBoxLayout.insertWidget(slot + 2, self.account, 0, Qt.AlignVCenter)
         self.hBoxLayout.insertSpacing(slot + 3, 12)

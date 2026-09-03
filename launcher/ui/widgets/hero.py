@@ -5,9 +5,9 @@ one big call-to-action sitting over the artwork.
 """
 import webbrowser
 
-from PyQt5.QtCore import Qt, QRectF, QVariantAnimation, QEasingCurve, pyqtSignal
-from PyQt5.QtGui import (QPainter, QColor, QLinearGradient, QMovie, QFont,
-                         QPixmap, QFontMetrics)
+from PyQt5.QtCore import Qt, QRect, QVariantAnimation, QEasingCurve, pyqtSignal
+from PyQt5.QtGui import (QPainter, QColor, QLinearGradient, QRadialGradient,
+                         QMovie, QFont, QPixmap, QFontMetrics)
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy
 
 from qfluentwidgets import setFont
@@ -72,11 +72,10 @@ class StateChip(QLabel):
     def set_state(self, state):
         text = CHIP_TEXT.get(state, "")
         self.setText(text)
-        color = theme.STATE_COLORS.get(state, theme.TEXT_DIM)
-        self.setFixedWidth(QFontMetrics(self.font()).horizontalAdvance(text) + 36)
+        self.setFixedWidth(QFontMetrics(self.font()).horizontalAdvance(text) + 40)
         self.setStyleSheet(
-            f"color: {color}; background-color: rgba(8, 11, 18, 0.82);"
-            f"border: 1px solid {color}66; border-radius: 15px;")
+            f"color: {theme.TEXT}; background-color: rgba(255, 255, 255, 0.17);"
+            f"border-radius: 15px;")
 
 
 class HeroSection(QWidget):
@@ -84,7 +83,7 @@ class HeroSection(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(352)
+        self.setFixedHeight(310)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self._movie = None
@@ -105,7 +104,7 @@ class HeroSection(QWidget):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(46, 60, 46, 26)
+        layout.setContentsMargins(48, 26, 48, 18)
         layout.setSpacing(0)
 
         self.genre = QLabel()
@@ -122,16 +121,6 @@ class HeroSection(QWidget):
         top.addWidget(self.chip, 0, Qt.AlignVCenter)
         top.addStretch(1)
 
-        self.subtitle = QLabel()
-        setFont(self.subtitle, 13)
-        self.subtitle.setStyleSheet(f"color: {theme.TEXT_DIM};")
-
-        self.blurb = QLabel()
-        self.blurb.setWordWrap(True)
-        self.blurb.setFixedWidth(410)
-        setFont(self.blurb, 12)
-        self.blurb.setStyleSheet(f"color: {theme.TEXT_FAINT};")
-
         nav = QHBoxLayout()
         nav.setSpacing(0)
         self.site_link = QLabel("  ⌂  OFFICIAL WEBSITE  ")
@@ -139,8 +128,7 @@ class HeroSection(QWidget):
         self.site_link.setFixedHeight(38)
         setFont(self.site_link, 12, QFont.DemiBold)
         self.site_link.setStyleSheet(
-            f"color: {theme.TEXT}; background-color: rgba(8, 11, 18, 0.55);"
-            f"border: 1px solid rgba(255,255,255,0.34);"
+            f"color: {theme.TEXT}; border: 1px solid rgba(255,255,255,0.42);"
             f"border-radius: 19px; letter-spacing: 1px;")
         nav.addWidget(self.site_link, 0, Qt.AlignVCenter)
         nav.addSpacing(22)
@@ -160,16 +148,13 @@ class HeroSection(QWidget):
         self.play.clicked.connect(self.play_clicked)
 
         layout.addWidget(self.genre)
-        layout.addSpacing(2)
+        layout.addSpacing(1)
         layout.addLayout(top)
-        layout.addSpacing(4)
-        layout.addWidget(self.subtitle)
-        layout.addSpacing(10)
-        layout.addWidget(self.blurb)
-        layout.addStretch(1)
+        layout.addSpacing(22)
         layout.addLayout(nav)
         layout.addSpacing(20)
         layout.addWidget(self.play, 0, Qt.AlignLeft)
+        layout.addStretch(1)
 
     # --------------------------------------------------------------- state
 
@@ -184,8 +169,6 @@ class HeroSection(QWidget):
         # the chip on top of the text; measure it and pin the width instead.
         self.title.setFixedWidth(
             QFontMetrics(self.title.font()).horizontalAdvance(game.title) + 6)
-        self.subtitle.setText(game.subtitle)
-        self.blurb.setText(game.blurb)
         self.set_state(game.state)
 
         if not changed:
@@ -233,44 +216,56 @@ class HeroSection(QWidget):
     def paintEvent(self, event):
         p = QPainter(self)
         rect = self.rect()
-        p.fillRect(rect, QColor(theme.BASE))
+        self._paint_ground(p, rect)
 
         # The art occupies the right two thirds; the left is for the wordmark.
-        art = QRectF(rect.width() * 0.30, 0, rect.width() * 0.70, rect.height())
-        p.save()
-        p.setClipRect(art)
+        art = QRect(int(rect.width() * 0.34), 0,
+                    int(rect.width() * 0.66), rect.height())
         if not self._previous.isNull() and self._fade < 1.0:
-            p.drawPixmap(art, pixel.fit(self._previous, int(art.width()),
-                                        int(art.height()), self._prev_focus),
-                         QRectF(0, 0, art.width(), art.height()))
+            p.drawPixmap(art.topLeft(),
+                         self._faded(self._previous, art, self._prev_focus))
         if not self._frame.isNull():
             p.setOpacity(self._fade)
-            p.drawPixmap(art, pixel.fit(self._frame, int(art.width()),
-                                        int(art.height()), self._game.banner_focus),
-                         QRectF(0, 0, art.width(), art.height()))
+            p.drawPixmap(art.topLeft(),
+                         self._faded(self._frame, art, self._game.banner_focus))
             p.setOpacity(1.0)
-        p.restore()
 
         self._paint_scrim(p, rect, art)
         p.end()
 
+    @staticmethod
+    def _faded(source, art, focus):
+        """The artwork with its left edge masked out, so the ground shows
+        through instead of being painted over."""
+        layer = pixel.fit(source, art.width(), art.height(), focus)
+        masked = QPixmap(layer.size())
+        masked.fill(Qt.transparent)
+
+        lp = QPainter(masked)
+        lp.drawPixmap(0, 0, layer)
+        lp.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        ramp = QLinearGradient(0, 0, art.width() * 0.52, 0)
+        ramp.setColorAt(0.0, QColor(0, 0, 0, 0))
+        ramp.setColorAt(0.55, QColor(0, 0, 0, 120))
+        ramp.setColorAt(1.0, QColor(0, 0, 0, 255))
+        lp.fillRect(masked.rect(), ramp)
+        lp.end()
+        return masked
+
+    def _paint_ground(self, p, rect):
+        """Navy page with a blue bloom sitting behind the key art."""
+        p.fillRect(rect, QColor(theme.BASE))
+
+        glow = QRadialGradient(rect.width() * 0.56, rect.height() * 0.22,
+                               rect.width() * 0.58)
+        glow.setColorAt(0.0, QColor(theme.GLOW))
+        glow.setColorAt(0.45, QColor(48, 94, 138, 150))
+        glow.setColorAt(1.0, QColor(34, 51, 73, 0))
+        p.fillRect(rect, glow)
+
     def _paint_scrim(self, p, rect, art):
         # Fade the art into the page on every edge it touches.
-        # Reaches far enough right that the nav row never lands on lit pixels.
-        side = QLinearGradient(art.left(), 0, art.left() + art.width() * 0.92, 0)
-        side.setColorAt(0.00, QColor(theme.BASE))
-        side.setColorAt(0.40, QColor(9, 13, 21, 220))
-        side.setColorAt(0.76, QColor(9, 13, 21, 70))
-        side.setColorAt(1.00, QColor(9, 13, 21, 0))
-        p.fillRect(art, side)
-
-        bottom = QLinearGradient(0, rect.height() * 0.45, 0, rect.height())
-        bottom.setColorAt(0.0, QColor(9, 13, 21, 0))
-        bottom.setColorAt(1.0, QColor(theme.BASE))
+        bottom = QLinearGradient(0, rect.height() * 0.62, 0, rect.height())
+        bottom.setColorAt(0.0, QColor(27, 40, 57, 0))
+        bottom.setColorAt(1.0, QColor(theme.BASE_LOW))
         p.fillRect(rect, bottom)
-
-        top = QLinearGradient(0, 0, 0, 96)
-        top.setColorAt(0.0, QColor(7, 10, 17, 232))
-        top.setColorAt(0.5, QColor(7, 10, 17, 120))
-        top.setColorAt(1.0, QColor(7, 10, 17, 0))
-        p.fillRect(rect, top)

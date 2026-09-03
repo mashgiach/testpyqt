@@ -1,15 +1,13 @@
 """Play tab: hero over the artwork, then the notice grid - the shape a
 publisher's game page takes."""
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 
-from qfluentwidgets import (SingleDirectionScrollArea, TransparentDropDownPushButton,
-                            RoundMenu, Action, setFont)
+from qfluentwidgets import SingleDirectionScrollArea
 
+from .widgets.filter_button import FilterButton
 from .widgets.hero import HeroSection
 from .widgets.news_grid import NewsGrid
-from ..core import theme
 from ..core.paths import banner
 
 
@@ -44,19 +42,19 @@ class HomePage(QWidget):
         layout.addWidget(self.hero)
 
         filter_row = QHBoxLayout()
-        filter_row.setContentsMargins(44, 2, 46, 8)
-        self.filter_btn = TransparentDropDownPushButton("ALL")
-        setFont(self.filter_btn, 13, QFont.DemiBold)
-        self.filter_btn.setStyleSheet(f"color: {theme.TEXT}; letter-spacing: 1.5px;")
+        filter_row.setContentsMargins(48, 14, 48, 14)
+        self.filter_btn = FilterButton()
+        self.filter_btn.changed.connect(self._apply_filter)
         filter_row.addWidget(self.filter_btn)
         filter_row.addStretch(1)
         layout.addLayout(filter_row)
 
         grid_row = QHBoxLayout()
-        grid_row.setContentsMargins(46, 0, 46, 26)
+        grid_row.setContentsMargins(48, 0, 48, 28)
         self.grid = NewsGrid()
         self.grid.article_opened.connect(self.article_opened)
-        grid_row.addWidget(self.grid, 1)
+        grid_row.addWidget(self.grid, 0, Qt.AlignLeft)
+        grid_row.addStretch(1)
         layout.addLayout(grid_row)
         layout.addStretch(1)
 
@@ -66,13 +64,9 @@ class HomePage(QWidget):
         self._rebuild_filter()
 
     def _rebuild_filter(self):
-        menu = RoundMenu(parent=self.filter_btn)
-        for name in self.grid.categories():
-            menu.addAction(Action(name, triggered=lambda checked=False, n=name:
-                                  self._apply_filter(n)))
-        self.filter_btn.setMenu(menu)
+        self.filter_btn.set_options(self.grid.categories())
         self._apply_filter("All")
 
     def _apply_filter(self, category):
-        self.filter_btn.setText(category.upper())
+        self.filter_btn.set_current(category)
         self.grid.set_filter(category)

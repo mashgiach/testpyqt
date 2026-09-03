@@ -1,14 +1,16 @@
-"""Palette lifted from the GuttyKreum pixel art, pitched dark for the launcher."""
+"""Palette matched to the reference game page: deep navy blue, not black."""
 
-# Near-black navy base. The art carries the colour; the chrome stays out of it.
-INK = "#05070c"
-BASE = "#090d15"
-SURFACE = "#0f141f"
-SURFACE_HI = "#161d2b"
-LINE = "#1b2434"
+# Chrome and page. The page is navy; the art sits in a blue glow.
+INK = "#151f2e"
+BASE = "#223349"
+BASE_LOW = "#1b2839"
+SURFACE = "#151e2c"
+SURFACE_HI = "#1d2939"
+LINE = "#2c3d55"
 
-# Deep blue the hero scrim fades into, matching the tileset's night sky.
-HERO_SCRIM = "#070b14"
+# The cyan-blue bloom behind the key art.
+GLOW = "#3b6f9e"
+SCRIM = "#1d2c40"
 
 # Accents pulled straight out of the sprites.
 ORANGE = "#e8703a"
@@ -19,9 +21,9 @@ CREAM = "#f2e7d3"
 MOSS = "#7aa886"
 ROSE = "#d4676b"
 
-TEXT = "#eef2fa"
-TEXT_DIM = "#8e99b3"
-TEXT_FAINT = "#5c6782"
+TEXT = "#f2f5fa"
+TEXT_DIM = "#94a1b5"
+TEXT_FAINT = "#6c7b91"
 
 STATE_COLORS = {
     "ready": MOSS,

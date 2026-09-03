@@ -1,42 +1,124 @@
 {
   "kanagawa-nights": [
-    {"category": "Update", "title": "v4.2.1 Patch Notes - Neon Tide", "date": "2026-09-02", "pinned": true,
-     "body": "Night market stalls now restock on a 20 minute timer. Fixed the vending machine that ate your yen and gave nothing back. Shika herds no longer path through the expressway."},
-    {"category": "Event", "title": "Lantern Run - double drops all weekend", "date": "2026-09-01", "pinned": true,
-     "body": "Clear any ward event between Friday 18:00 and Monday 06:00 JST for doubled currency and a Lantern Frog companion at 20 clears."},
-    {"category": "Notice", "title": "Scheduled maintenance - Sept 5, 04:00 JST", "date": "2026-08-31", "pinned": false,
-     "body": "All channels offline for roughly two hours while we move the market shard. Compensation mailed on return."},
-    {"category": "Event", "title": "Takoyaki cart cosmetic returns to the shop", "date": "2026-08-28", "pinned": false,
-     "body": "Back by request for two weeks only, alongside the retro TV housing decoration."},
-    {"category": "Notice", "title": "Action taken against 1,204 accounts", "date": "2026-08-26", "pinned": false,
-     "body": "Routine sweep for automation in the delivery loop. Appeals through the support portal."},
-    {"category": "Update", "title": "v4.2.0 - the rain rework", "date": "2026-08-20", "pinned": false,
-     "body": "Weather now drives reflections on every street surface, and puddles persist for ten minutes after a storm."}
+    {
+      "category": "Update",
+      "title": "v4.2.1 Patch Notes - Neon Tide",
+      "date": "2026-09-02",
+      "pinned": true,
+      "body": "Night market stalls now restock on a 20 minute timer. Fixed the vending machine that ate your yen and gave nothing back. Shika herds no longer path through the expressway.",
+      "featured": true
+    },
+    {
+      "category": "Event",
+      "title": "Lantern Run - double drops all weekend",
+      "date": "2026-09-01",
+      "pinned": true,
+      "body": "Clear any ward event between Friday 18:00 and Monday 06:00 JST for doubled currency and a Lantern Frog companion at 20 clears.",
+      "featured": true,
+      "media": true
+    },
+    {
+      "category": "Notice",
+      "title": "Scheduled maintenance - Sept 5, 04:00 JST",
+      "date": "2026-08-31",
+      "pinned": false,
+      "body": "All channels offline for roughly two hours while we move the market shard. Compensation mailed on return."
+    },
+    {
+      "category": "Event",
+      "title": "Takoyaki cart cosmetic returns to the shop",
+      "date": "2026-08-28",
+      "pinned": false,
+      "body": "Back by request for two weeks only, alongside the retro TV housing decoration."
+    },
+    {
+      "category": "Notice",
+      "title": "Action taken against 1,204 accounts",
+      "date": "2026-08-26",
+      "pinned": false,
+      "body": "Routine sweep for automation in the delivery loop. Appeals through the support portal."
+    },
+    {
+      "category": "Update",
+      "title": "v4.2.0 - the rain rework",
+      "date": "2026-08-20",
+      "pinned": false,
+      "body": "Weather now drives reflections on every street surface, and puddles persist for ten minutes after a storm."
+    }
   ],
   "shibuya-drift": [
-    {"category": "Event", "title": "Midnight Circuit ranked season 7 is live", "date": "2026-09-02", "pinned": true,
-     "body": "New ward rotation, and the scooter class is finally legal in ranked. Placement runs open for ten days."},
-    {"category": "Update", "title": "v2.8.0 - handling pass on the taxi class", "date": "2026-08-29", "pinned": false,
-     "body": "Weight transfer reworked, brake bias exposed in tuning, and the wall-ride exploit at Dogenzaka is gone."},
-    {"category": "Notice", "title": "Ghost data migration", "date": "2026-08-18", "pinned": false,
-     "body": "Ghosts recorded before v2.6 will stop replaying after the season rolls over. Export your best laps."}
+    {
+      "category": "Event",
+      "title": "Midnight Circuit ranked season 7 is live",
+      "date": "2026-09-02",
+      "pinned": true,
+      "body": "New ward rotation, and the scooter class is finally legal in ranked. Placement runs open for ten days.",
+      "featured": true
+    },
+    {
+      "category": "Update",
+      "title": "v2.8.0 - handling pass on the taxi class",
+      "date": "2026-08-29",
+      "pinned": false,
+      "body": "Weight transfer reworked, brake bias exposed in tuning, and the wall-ride exploit at Dogenzaka is gone.",
+      "featured": true,
+      "media": true
+    },
+    {
+      "category": "Notice",
+      "title": "Ghost data migration",
+      "date": "2026-08-18",
+      "pinned": false,
+      "body": "Ghosts recorded before v2.6 will stop replaying after the season rolls over. Export your best laps."
+    }
   ],
   "deer-trail": [
-    {"category": "Update", "title": "Chapter II is out now", "date": "2026-08-30", "pinned": true,
-     "body": "Six hours of new trail, the old station line, and a photo mode that finally has a tripod."},
-    {"category": "Notice", "title": "Save files from the demo carry over", "date": "2026-08-30", "pinned": false,
-     "body": "Drop your demo save in the Documents folder and the game will pick it up on next boot."}
+    {
+      "category": "Update",
+      "title": "Chapter II is out now",
+      "date": "2026-08-30",
+      "pinned": true,
+      "body": "Six hours of new trail, the old station line, and a photo mode that finally has a tripod.",
+      "featured": true
+    },
+    {
+      "category": "Notice",
+      "title": "Save files from the demo carry over",
+      "date": "2026-08-30",
+      "pinned": false,
+      "body": "Drop your demo save in the Documents folder and the game will pick it up on next boot.",
+      "featured": true,
+      "media": true
+    }
   ],
   "torii-tactics": [
-    {"category": "Notice", "title": "Early access build 0.9.2", "date": "2026-09-01", "pinned": true,
-     "body": "Frog AI now flanks. Balance is deliberately loose while we watch the numbers, so expect weekly changes."}
+    {
+      "category": "Notice",
+      "title": "Early access build 0.9.2",
+      "date": "2026-09-01",
+      "pinned": true,
+      "body": "Frog AI now flanks. Balance is deliberately loose while we watch the numbers, so expect weekly changes.",
+      "featured": true
+    }
   ],
   "drone-runner": [
-    {"category": "Event", "title": "Global leaderboard reset", "date": "2026-08-27", "pinned": true,
-     "body": "Season three boards are live. Top 100 keep their courier badge permanently."}
+    {
+      "category": "Event",
+      "title": "Global leaderboard reset",
+      "date": "2026-08-27",
+      "pinned": true,
+      "body": "Season three boards are live. Top 100 keep their courier badge permanently.",
+      "featured": true
+    }
   ],
   "kaiju-frog": [
-    {"category": "Notice", "title": "Emergency maintenance in progress", "date": "2026-09-03", "pinned": true,
-     "body": "We took the servers down after the rainy season event caused duplicate boss spawns. Back at 06:00 JST."}
+    {
+      "category": "Notice",
+      "title": "Emergency maintenance in progress",
+      "date": "2026-09-03",
+      "pinned": true,
+      "body": "We took the servers down after the rainy season event caused duplicate boss spawns. Back at 06:00 JST.",
+      "featured": true
+    }
   ]
 }

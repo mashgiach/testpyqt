@@ -7,6 +7,16 @@ from .config import load_library_state, save_library_state
 from .paths import DATA
 
 
+STATE_TEXT = {
+    "ready": "READY",
+    "update": "UPDATE",
+    "install": "NOT INSTALLED",
+    "busy": "DOWNLOADING",
+    "running": "RUNNING",
+    "maintenance": "MAINTENANCE",
+}
+
+
 @dataclass
 class Game:
     id: str

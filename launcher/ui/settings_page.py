@@ -34,13 +34,12 @@ class SettingsPage(QWidget):
         outer.addWidget(scroll)
 
         layout = ExpandLayout(holder)
-        layout.setContentsMargins(40, 10, 22, 24)
+        layout.setContentsMargins(48, 10, 30, 24)
         layout.setSpacing(20)
 
-        # ExpandLayout ignores a top margin, so clear the floating tab row
-        # with a spacer of its own.
+        # ExpandLayout ignores a top margin, so open the page with a spacer.
         gap = QWidget(holder)
-        gap.setFixedHeight(48)
+        gap.setFixedHeight(14)
         layout.addWidget(gap)
 
         self.game_group = SettingCardGroup("Game", holder)
