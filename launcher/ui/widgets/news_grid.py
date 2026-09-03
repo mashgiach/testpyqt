@@ -10,13 +10,6 @@ from PyQt5.QtWidgets import QWidget
 from ...core import pixel, theme
 from ...core.paths import tile
 
-CATEGORY_COLORS = {
-    "Notice": theme.SKY,
-    "Update": theme.ORANGE,
-    "Event": theme.MOSS,
-    "Sales": theme.CREAM,
-}
-
 CATEGORY_SPRITES = {
     "Update": ["sign_neon", "machine", "arcade"],
     "Event": ["food_cart", "fan", "drone"],
@@ -40,7 +33,6 @@ class NewsCard(QWidget):
         self.accent = accent
         self.sprite = sprite
         self.featured = bool(item.get("featured"))
-        self.tint = CATEGORY_COLORS.get(item["category"], accent)
         self.setFixedSize(CARD_W, CARD_H)
         self.setCursor(Qt.PointingHandCursor)
         self._lift = 0.0
@@ -98,14 +90,11 @@ class NewsCard(QWidget):
             p.drawPixmap(art_rect, pixel.fit(self.art, int(art_rect.width()),
                                              int(art_rect.height()), focus, hfocus),
                          QRectF(0, 0, art_rect.width(), art_rect.height()))
-        p.fillRect(art_rect, QColor(21, 30, 44, darken))
-        tint = QColor(self.tint)
-        tint.setAlpha(46)
-        p.fillRect(art_rect, tint)
+        p.fillRect(art_rect, QColor(24, 39, 57, darken))
         p.restore()
 
     def _paint_art(self, p, art_rect):
-        self._draw_art(p, art_rect, self.focus, self.hfocus, 168)
+        self._draw_art(p, art_rect, self.focus, self.hfocus, 150)
 
         if not self.sprite.isNull():
             side = 74 if self._lift else 68
@@ -125,7 +114,7 @@ class NewsCard(QWidget):
 
     def _paint_poster(self, p, rect):
         """A promo post: artwork edge to edge, title burned into the bottom."""
-        self._draw_art(p, rect, self.focus, self.hfocus, 58)
+        self._draw_art(p, rect, self.focus, self.hfocus, 40)
 
         veil = QLinearGradient(0, rect.top() + rect.height() * 0.42, 0, rect.bottom())
         veil.setColorAt(0.0, QColor(12, 19, 30, 0))
@@ -175,7 +164,7 @@ class NewsCard(QWidget):
         y = rect.top() + ART_H + 24
 
         p.setFont(QFont("Noto Sans", 8, QFont.Bold))
-        p.setPen(QColor(theme.TEXT))
+        p.setPen(QColor(theme.TEXT_DIM))
         p.drawText(int(x), int(y), self.item["category"].upper())
 
         p.setPen(QColor(theme.TEXT))

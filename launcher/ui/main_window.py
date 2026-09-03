@@ -49,7 +49,7 @@ class MainWindow(FramelessWindow):
 
     def _build_ui(self):
         column = QVBoxLayout(self)
-        column.setContentsMargins(0, self.titleBar.height(), 0, 0)
+        column.setContentsMargins(0, 0, 0, 0)
         column.setSpacing(0)
 
         self.stack = PopUpAniStackedWidget(self)
@@ -71,7 +71,7 @@ class MainWindow(FramelessWindow):
 
     def _apply_style(self):
         setTheme(Theme.DARK)
-        setThemeColor(palette.ORANGE)
+        setThemeColor(palette.ACCENT)
         self.setStyleSheet(STYLE_SHEET)
 
     def _center(self):
@@ -114,6 +114,12 @@ class MainWindow(FramelessWindow):
     def _go(self, key):
         self.stack.setCurrentWidget({"home": self.home, "library": self.library,
                                      "settings": self.settings}[key])
+        # Over the hero the bar is transparent so the art reaches the top edge.
+        # The inner pages have no art, so it takes the page's own navy and
+        # scrolled content cannot slide under it.
+        self.titleBar.setStyleSheet(
+            "background: transparent;" if key == "home"
+            else f"LauncherTitleBar {{ background-color: {palette.BASE_LOW}; }}")
 
     def select_game(self, game_id: str):
         self.current = self.catalog.get(game_id)

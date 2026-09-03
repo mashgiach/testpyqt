@@ -83,7 +83,7 @@ class HeroSection(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(310)
+        self.setFixedHeight(356)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self._movie = None
@@ -104,7 +104,7 @@ class HeroSection(QWidget):
 
     def _build(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(48, 26, 48, 18)
+        layout.setContentsMargins(48, 74, 48, 18)
         layout.setSpacing(0)
 
         self.genre = QLabel()
@@ -163,7 +163,7 @@ class HeroSection(QWidget):
         changed = first or self._game.id != game.id
 
         self.genre.setText(game.genre.upper())
-        self.genre.setStyleSheet(f"color: {game.accent}; letter-spacing: 2px;")
+        self.genre.setStyleSheet(f"color: {theme.TEXT_DIM}; letter-spacing: 2.4px;")
         self.title.setText(game.title)
         # QLabel over-reports its width for a heavy display font, which pushes
         # the chip on top of the text; measure it and pin the width instead.
@@ -265,6 +265,15 @@ class HeroSection(QWidget):
 
     def _paint_scrim(self, p, rect, art):
         # Fade the art into the page on every edge it touches.
+        # A soft veil along the top edge. Invisible over the navy left side,
+        # and enough shade for the white window controls on the right.
+        top = QLinearGradient(0, 0, 0, 108)
+        top.setColorAt(0.00, QColor(16, 27, 42, 248))
+        top.setColorAt(0.34, QColor(16, 27, 42, 205))
+        top.setColorAt(0.68, QColor(16, 27, 42, 88))
+        top.setColorAt(1.00, QColor(16, 27, 42, 0))
+        p.fillRect(rect, top)
+
         bottom = QLinearGradient(0, rect.height() * 0.62, 0, rect.height())
         bottom.setColorAt(0.0, QColor(27, 40, 57, 0))
         bottom.setColorAt(1.0, QColor(theme.BASE_LOW))

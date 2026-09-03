@@ -6,8 +6,13 @@ skinned with GuttyKreum's *Urban Accessories* pixel art.
 
 Laid out like a publisher's game page: deep navy, key art fading out of a blue
 bloom, a logo block with a status chip and section links, one white pill
-call-to-action, and a row of notice cards under a `▾ ALL` filter. No sidebar -
-app navigation sits in the title bar, and the Library tab switches games.
+call-to-action, and a row of notice cards under a `▾ ALL` filter. No sidebar
+and no header band - the art runs to the top edge, app navigation floats over
+it, and the Library tab switches games.
+
+The chrome is one family of navies (`launcher/core/theme.py`) with the page's
+own blue as the only UI accent. The pixel pack's warmer colours are reserved
+for game identity and status - they never tint the interface or the artwork.
 
 ![Play tab](docs/screenshot-play.png)
 

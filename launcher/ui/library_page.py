@@ -46,7 +46,7 @@ class GameCard(QWidget):
         art = QRectF(rect.left(), rect.top(), rect.width(), 128)
         accent = QColor(self.game.accent)
         grad = QLinearGradient(art.left(), art.top(), art.right(), art.bottom())
-        grad.setColorAt(0, QColor(accent.red(), accent.green(), accent.blue(), 60))
+        grad.setColorAt(0, QColor(accent.red(), accent.green(), accent.blue(), 34))
         grad.setColorAt(1, QColor(theme.INK))
         p.setBrush(grad)
         p.drawRect(art)
@@ -88,7 +88,7 @@ class LibraryPage(QWidget):
         self.current_id = catalog.games[0].id
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(48, 26, 30, 14)
+        layout.setContentsMargins(48, 72, 30, 14)
         layout.setSpacing(16)
 
         header = QHBoxLayout()

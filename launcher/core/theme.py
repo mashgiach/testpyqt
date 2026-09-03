@@ -1,18 +1,22 @@
 """Palette matched to the reference game page: deep navy blue, not black."""
 
-# Chrome and page. The page is navy; the art sits in a blue glow.
-INK = "#151f2e"
+# One family of navies, so nothing meets in a hard line. The page is navy,
+# the art sits in a blue glow, and the chrome is the same hue a shade down.
+INK = "#18263a"
 BASE = "#223349"
 BASE_LOW = "#1b2839"
-SURFACE = "#151e2c"
-SURFACE_HI = "#1d2939"
+SURFACE = "#182739"
+SURFACE_HI = "#213248"
 LINE = "#2c3d55"
 
 # The cyan-blue bloom behind the key art.
 GLOW = "#3b6f9e"
 SCRIM = "#1d2c40"
 
-# Accents pulled straight out of the sprites.
+# The UI accent is the page's own blue. The sprite colours below are for
+# game identity and status only - they never tint the chrome.
+ACCENT = "#7fb2e5"
+
 ORANGE = "#e8703a"
 ORANGE_DIM = "#b4522a"
 SKY = "#7fb2e5"

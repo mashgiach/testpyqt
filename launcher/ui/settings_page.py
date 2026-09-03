@@ -39,7 +39,7 @@ class SettingsPage(QWidget):
 
         # ExpandLayout ignores a top margin, so open the page with a spacer.
         gap = QWidget(holder)
-        gap.setFixedHeight(14)
+        gap.setFixedHeight(58)
         layout.addWidget(gap)
 
         self.game_group = SettingCardGroup("Game", holder)

@@ -1,11 +1,11 @@
 """Frameless title bar with the launcher wordmark and the account chip."""
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, QRectF, pyqtSignal
 from PyQt5.QtGui import QFont, QPainter, QColor
 from PyQt5.QtWidgets import QLabel, QHBoxLayout, QWidget
 
 from qframelesswindow import TitleBar
 from qfluentwidgets import (TransparentToolButton, FluentIcon, RoundMenu, Action,
-                            setFont, MenuAnimationType, Pivot, ToolTipFilter)
+                            MenuAnimationType, Pivot, ToolTipFilter)
 
 from ...core import pixel, theme
 from ...core.paths import tile
@@ -23,7 +23,7 @@ class AccountChip(QWidget):
         self.setCursor(Qt.PointingHandCursor)
         self._name = "Guest"
         self._avatar = "frog"
-        self.setFixedWidth(150)
+        self.setFixedWidth(124)
 
     def set_account(self, name: str, avatar: str = "frog"):
         self._name = name
@@ -33,18 +33,19 @@ class AccountChip(QWidget):
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-        p.setPen(Qt.NoPen)
-        p.setBrush(QColor(255, 255, 255, 16))
-        p.drawRoundedRect(self.rect(), 15, 15)
+        # A dark pill with a hairline edge, so it reads on art or on navy.
+        p.setPen(QColor(255, 255, 255, 46))
+        p.setBrush(QColor(13, 22, 36, 130))
+        p.drawRoundedRect(QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5), 14.5, 14.5)
 
         icon = pixel.load(tile(self._avatar), 1)
         if not icon.isNull():
-            scaled = icon.scaled(22, 22, Qt.KeepAspectRatio, Qt.FastTransformation)
+            scaled = icon.scaled(20, 20, Qt.KeepAspectRatio, Qt.FastTransformation)
             p.drawPixmap(6, (self.height() - scaled.height()) // 2, scaled)
 
         p.setFont(QFont("Noto Sans", 9, QFont.DemiBold))
         p.setPen(QColor(theme.TEXT))
-        p.drawText(34, self.height() // 2 + 4, self._name)
+        p.drawText(31, self.height() // 2 + 4, self._name)
 
         p.setPen(QColor(theme.TEXT_DIM))
         p.setFont(QFont("Noto Sans", 7))
@@ -65,20 +66,15 @@ class AccountChip(QWidget):
 class LauncherTitleBar(TitleBar):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(48)
+        self.setFixedHeight(52)
+        self.setStyleSheet("background: transparent;")
 
+        # A small mark only. A launcher wordmark here would compete with the
+        # game's own title directly below it.
         mark = QLabel()
         mark.setPixmap(pixel.load(tile("torii"), 1).scaled(
-            24, 24, Qt.KeepAspectRatio, Qt.FastTransformation))
-        mark.setContentsMargins(14, 0, 8, 0)
-
-        wordmark = QLabel("PIXEL")
-        setFont(wordmark, 13, QFont.Black)
-        wordmark.setStyleSheet(f"color: {theme.CREAM}; letter-spacing: 2px;")
-
-        suffix = QLabel("LAUNCHER")
-        setFont(suffix, 13, QFont.Light)
-        suffix.setStyleSheet(f"color: {theme.ORANGE}; letter-spacing: 2px;")
+            22, 22, Qt.KeepAspectRatio, Qt.FastTransformation))
+        mark.setContentsMargins(20, 0, 0, 0)
 
         # App-level nav lives up here so the page below can stay faithful to
         # the reference layout, which has no sidebar and no tab band.
@@ -100,10 +96,9 @@ class LauncherTitleBar(TitleBar):
 
         left = QHBoxLayout()
         left.setContentsMargins(0, 0, 0, 0)
-        left.setSpacing(2)
-        for widget in (mark, wordmark, suffix):
-            left.addWidget(widget, 0, Qt.AlignVCenter)
-        left.addSpacing(26)
+        left.setSpacing(0)
+        left.addWidget(mark, 0, Qt.AlignVCenter)
+        left.addSpacing(18)
         left.addWidget(self.pivot, 0, Qt.AlignVCenter)
 
         # The base title bar already ends with a stretch and the window buttons,
@@ -119,6 +114,7 @@ class LauncherTitleBar(TitleBar):
 
         self.maxBtn.setVisible(False)
         for btn in (self.minBtn, self.closeBtn):
+            btn.setNormalColor(Qt.white)
             btn.setHoverColor(Qt.white)
             btn.setPressedColor(Qt.white)
         self.minBtn.setHoverBackgroundColor(QColor(255, 255, 255, 26))
