@@ -1,0 +1,131 @@
+[
+  {
+    "id": "kanagawa-nights",
+    "title": "Kanagawa Nights",
+    "subtitle": "Season 4 : Neon Tide",
+    "genre": "Open World MMO",
+    "version": "4.2.1",
+    "installed_version": "4.1.7",
+    "size_gb": 24.6,
+    "patch_gb": 3.4,
+    "icon": "sign_neon",
+    "banner": "kanagawa.gif",
+    "banner_focus": 0.66,
+    "accent": "#e8703a",
+    "state": "update",
+    "players": 18422,
+    "blurb": "The tide came in over Kanagawa and never went back out. Build a shop, run the night market, outlive the season.",
+    "tags": [
+      "MMO",
+      "Co-op",
+      "Controller"
+    ]
+  },
+  {
+    "id": "shibuya-drift",
+    "title": "Shibuya Drift",
+    "subtitle": "Midnight Circuit",
+    "genre": "Arcade Racing",
+    "version": "2.8.0",
+    "installed_version": "2.8.0",
+    "size_gb": 11.2,
+    "patch_gb": 0.0,
+    "icon": "car_15",
+    "banner": "city_night.gif",
+    "banner_focus": 0.72,
+    "accent": "#7fb2e5",
+    "state": "ready",
+    "players": 6109,
+    "blurb": "Four wards, ninety seconds, one clean line. Traffic does not care that you are on a hot lap.",
+    "tags": [
+      "Racing",
+      "PvP",
+      "Time Attack"
+    ]
+  },
+  {
+    "id": "deer-trail",
+    "title": "Deer Trail",
+    "subtitle": "Chapter II",
+    "genre": "Cozy Adventure",
+    "version": "1.4.3",
+    "installed_version": "1.4.3",
+    "size_gb": 3.8,
+    "patch_gb": 0.0,
+    "icon": "deer",
+    "banner": "kanagawa.gif",
+    "banner_focus": 0.28,
+    "accent": "#7aa886",
+    "state": "ready",
+    "players": 2874,
+    "blurb": "Follow the shika down the old commuter line. Nothing chases you. That is the whole point.",
+    "tags": [
+      "Single Player",
+      "Story",
+      "Relaxing"
+    ]
+  },
+  {
+    "id": "torii-tactics",
+    "title": "Torii Tactics",
+    "subtitle": "Shrine War",
+    "genre": "Turn-Based Strategy",
+    "version": "0.9.2",
+    "installed_version": null,
+    "size_gb": 6.5,
+    "patch_gb": 0.0,
+    "icon": "torii",
+    "banner": "city_night.gif",
+    "banner_focus": 0.22,
+    "accent": "#a88bd4",
+    "state": "install",
+    "players": 941,
+    "blurb": "Hold the gate for eight turns. The frogs are organised this time.",
+    "tags": [
+      "Strategy",
+      "Early Access"
+    ]
+  },
+  {
+    "id": "drone-runner",
+    "title": "Drone Runner",
+    "subtitle": "Delivery Protocol",
+    "genre": "Score Attack",
+    "version": "3.1.0",
+    "installed_version": null,
+    "size_gb": 1.9,
+    "patch_gb": 0.0,
+    "icon": "drone",
+    "banner": "city_night.gif",
+    "banner_focus": 0.05,
+    "accent": "#7fb2e5",
+    "state": "install",
+    "players": 3550,
+    "blurb": "Forty parcels, one battery, and a city that keeps adding power lines.",
+    "tags": [
+      "Arcade",
+      "Leaderboards"
+    ]
+  },
+  {
+    "id": "kaiju-frog",
+    "title": "Kaiju Frog",
+    "subtitle": "Rainy Season",
+    "genre": "Action Brawler",
+    "version": "5.0.0",
+    "installed_version": "5.0.0",
+    "size_gb": 8.1,
+    "patch_gb": 0.0,
+    "icon": "frog",
+    "banner": "kanagawa.gif",
+    "banner_focus": 0.9,
+    "accent": "#d4676b",
+    "state": "maintenance",
+    "players": 0,
+    "blurb": "It is three storeys tall and it is very, very damp. Servers back at 06:00 JST.",
+    "tags": [
+      "Action",
+      "Local Co-op"
+    ]
+  }
+]

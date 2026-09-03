@@ -1,0 +1,8 @@
+[
+  {"name": "Kanagawa-01", "ping": 24, "load": 0.71, "status": "online"},
+  {"name": "Kanagawa-02", "ping": 31, "load": 0.94, "status": "busy"},
+  {"name": "Shibuya-01", "ping": 48, "load": 0.42, "status": "online"},
+  {"name": "Shibuya-02", "ping": 52, "load": 0.18, "status": "online"},
+  {"name": "Global-EU", "ping": 186, "load": 0.55, "status": "online"},
+  {"name": "Global-NA", "ping": 141, "load": 0.0, "status": "offline"}
+]
